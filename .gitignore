@@ -52,14 +52,6 @@ db.sqlite3-journal
 # OS
 .DS_Store
 Thumbs.db
-
-# Project specific files (as requested)
-env_template.txt
-QUICK_START.md
-requirements.txt
-SETUP.md
-create_env_file.py
-
 # Backup files
 *.bak
 *.backup
