@@ -1,0 +1,43 @@
+{% extends "events/base.html" %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-gray-800">Participants</h1>
+<a href="{% url 'participant_create' %}" class="mb-4 inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 shadow-md">Add Participant</a>
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Email</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Events</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      {% for participant in participants %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ participant.name }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ participant.email }}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">
+            {% if participant.events.all %}
+              {% for event in participant.events.all %}
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">{{ event.name }}</span>
+              {% endfor %}
+            {% else %}
+              <span class="text-gray-400 italic">No events</span>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <a href="{% url 'participant_update' participant.id %}" class="text-green-600 hover:text-green-900 mr-3">Edit</a>
+            <a href="{% url 'participant_delete' participant.id %}" class="text-red-600 hover:text-red-900">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="px-6 py-4 text-center text-gray-500">No participants found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

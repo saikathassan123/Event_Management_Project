@@ -1,0 +1,68 @@
+{% extends "events/base.html" %}
+{% block content %}
+<h1 class="text-4xl font-bold mb-8 text-gray-800">Organizer Dashboard</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div class="bg-white p-6 rounded-lg shadow-md cursor-pointer transition-all hover:shadow-lg {% if active_stat == 'all' %}ring-2 ring-blue-400 bg-blue-50{% endif %}"
+       onclick="window.location='?stat_type=all'">
+    <p class="text-sm font-medium text-gray-600 mb-2">Total Events</p>
+    <p class="text-4xl font-bold text-blue-600">{{ total_events }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md cursor-pointer transition-all hover:shadow-lg {% if active_stat == 'upcoming' %}ring-2 ring-blue-400 bg-blue-50{% endif %}"
+       onclick="window.location='?stat_type=upcoming'">
+    <p class="text-sm font-medium text-gray-600 mb-2">Upcoming Events</p>
+    <p class="text-4xl font-bold text-green-600">{{ upcoming_events }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md cursor-pointer transition-all hover:shadow-lg {% if active_stat == 'past' %}ring-2 ring-blue-400 bg-blue-50{% endif %}"
+       onclick="window.location='?stat_type=past'">
+    <p class="text-sm font-medium text-gray-600 mb-2">Past Events</p>
+    <p class="text-4xl font-bold text-gray-600">{{ past_events }}</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <p class="text-sm font-medium text-gray-600 mb-2">Total Participants</p>
+    <p class="text-4xl font-bold text-purple-600">{{ total_participants }}</p>
+  </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+  <h2 class="text-2xl font-semibold mb-4 text-gray-800">Today's Events</h2>
+  {% if todays_events %}
+    <ul class="space-y-3">
+      {% for event in todays_events %}
+        <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+          <div>
+            <a href="{% url 'event_detail' event.id %}" class="text-blue-600 hover:text-blue-800 font-medium">{{ event.name }}</a>
+            <span class="text-gray-600 ml-2">- {{ event.time }} at {{ event.location }}</span>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-500 italic">No events scheduled for today.</p>
+  {% endif %}
+</div>
+
+<div class="bg-white rounded-lg shadow-md p-6">
+  <h2 class="text-2xl font-semibold mb-4 text-gray-800 capitalize">
+    {% if active_stat == 'all' %}All Events
+    {% elif active_stat == 'upcoming' %}Upcoming Events
+    {% else %}Past Events{% endif %}
+  </h2>
+  {% if list_events %}
+    <div class="space-y-3">
+      {% for event in list_events %}
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+          <div>
+            <a href="{% url 'event_detail' event.id %}" class="text-blue-600 hover:text-blue-800 font-medium">{{ event.name }}</a>
+            <span class="text-gray-600 ml-2">({{ event.date }})</span>
+            <span class="text-gray-500 text-sm ml-2">- {{ event.category.name }}</span>
+          </div>
+          <span class="text-sm text-gray-600">{{ event.participants.count }} participants</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-gray-500 italic">No events found.</p>
+  {% endif %}
+</div>
+{% endblock %}
