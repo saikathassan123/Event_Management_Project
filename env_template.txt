@@ -1,0 +1,19 @@
+# Copy this file to .env and fill in your actual values
+
+# Django Settings
+SECRET_KEY=django-insecure-&5qgin)4692r9c6@l)-((kkmi44b!s*w#%hcz)7d2ayu_g9q2p
+
+# Database Configuration (PostgreSQL)
+DB_NAME=Task_Management
+DB_USER=postgres
+DB_PASSWORD=your-postgres-password-here
+DB_HOST=localhost
+DB_PORT=5432
+
+# Optional: Email Configuration
+EMAIL_HOST=smtp.gmail.com
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+
