@@ -29,7 +29,6 @@ ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'http://127.0.0.1:8000']
 
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,7 +49,6 @@ except ImportError:
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -58,6 +56,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Add whitenoise middleware if available (for static files in production)
+try:
+    import whitenoise
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+except ImportError:
+    pass
 
 # Add debug toolbar middleware if available
 try:
@@ -89,7 +94,7 @@ WSGI_APPLICATION = 'assignment.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# For SQLite (Fallback)
+# For SQLite (Fallback - uncomment if needed)
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -99,13 +104,15 @@ WSGI_APPLICATION = 'assignment.wsgi.application'
 
 # For PostgreSQL
 # Support DATABASE_URL (used by hosting platforms like Render, Railway)
+# Also supports individual DB config from .env file
 DATABASE_URL = config('DATABASE_URL', default=None)
 
 if DATABASE_URL:
+    # Use DATABASE_URL if provided (for production/hosting platforms)
     try:
         import dj_database_url
         DATABASES = {
-            'default': dj_database_url.parse(DATABASE_URL)
+            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
         }
     except ImportError:
         # Fallback if dj-database-url not installed
@@ -120,6 +127,7 @@ if DATABASE_URL:
             }
         }
 else:
+    # Use individual database settings from .env file (for local development)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -155,8 +163,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WhiteNoise for static files in production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise for static files in production (if available)
+try:
+    import whitenoise
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+except ImportError:
+    pass
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
